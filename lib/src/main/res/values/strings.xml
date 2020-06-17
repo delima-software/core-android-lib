@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--region Defaults-->
+    <string name="default_data_name">Data</string>
+    <string name="default_tree_data_name">Tree Data</string>
+    <!--endregion-->
+
+</resources>

@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode rootProject.ext.buildVersionCode()
+        versionName rootProject.ext.buildVersionName()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    //Google
+    compileOnly("com.android.billingclient:billing:$dependency.google_billing")
+    compileOnly("com.android.billingclient:billing-ktx:$dependency.google_billing")
+
+    //Firebase
+    compileOnly("com.google.firebase:firebase-ads:$dependency.firebase_ads")
+
+    //Jetbrains
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$dependency.jetbrains_kotlin"
+
+    //Androidx
+    implementation "androidx.core:core-ktx:$dependency.androidx_core"
+    implementation "androidx.appcompat:appcompat:$dependency.androidx_appcompat"
+    implementation "androidx.navigation:navigation-fragment-ktx:$dependency.androidx_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$dependency.androidx_navigation"
+
+    //Test
+    testImplementation "junit:junit:$dependency.tests_junit"
+    androidTestImplementation "androidx.test.ext:junit:$dependency.tests_androidx_junit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$dependency.tests_androidx_espresso"
+
+}
