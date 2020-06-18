@@ -1,4 +1,6 @@
-# Using this library
+# Add library
+
+[![Alt](https://jitpack.io/v/org.bitbucket.virtualsoft-libs/core-android-lib.svg)](https://jitpack.io/#org.bitbucket.virtualsoft-libs/core-android-lib)
 
 ## Jitpack repository
 
