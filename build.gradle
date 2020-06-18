@@ -6,27 +6,8 @@ buildscript {
         targetSdkVersion = 29
         minSdkVersion = 23
 
-        versionMajor = 1
-        versionMinor = 0
-        versionPatch = 1
-        versionClassifier = null
-        isSnapshot = true
-
-        buildVersionCode = { String versionName ->
-            return ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
-        }
-
-        buildVersionName = {
-            String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
-            if (ext.versionClassifier == null && ext.isSnapshot) {
-                ext.versionClassifier = "SNAPSHOT"
-            }
-
-            if (ext.versionClassifier != null) {
-                versionName += "-" + ext.versionClassifier
-            }
-            return versionName
-        }
+        versionCode = 2
+        versionName = '1.0.2'
 
         classpath = [
                 android_gradle : '4.0.0',
