@@ -42,15 +42,6 @@ abstract class BaseBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     }
 
-    protected fun setupBackPressed(action: (() -> Unit)? = null) {
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                action?.invoke()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
     protected fun setupFullScreen() {
         var bottomSheetBehavior: BottomSheetBehavior<View>? = null
         (fragmentView.parent as? View)?.let { viewParent ->
