@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import com.virtualsoft.core.view.activities.BaseActivity
 
-class BaseDialogFragment : DialogFragment() {
+abstract class BaseDialogFragment : DialogFragment() {
 
     protected lateinit var fragmentContext: Context
     protected lateinit var baseActivity: BaseActivity
