@@ -6,8 +6,8 @@ buildscript {
         targetSdkVersion = 29
         minSdkVersion = 23
 
-        versionCode = 6
-        versionName = '2.0.3'
+        versionCode = 7
+        versionName = '2.0.4'
 
         classpath = [
                 android_gradle : '4.0.0',
