@@ -6,7 +6,7 @@ buildscript {
         targetSdkVersion = 29
         minSdkVersion = 23
 
-        versionCode = 8
+        versionCode = 9
         versionName = '2.0.5'
 
         classpath = [
