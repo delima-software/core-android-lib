@@ -1,7 +1,9 @@
 package com.virtualsoft.core.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.net.Uri
 
 object AppUtils {
 
@@ -15,5 +17,24 @@ object AppUtils {
 
     fun Context.getEnvironment(): String {
         return if (this.isDebugging()) DEVELOPMENT else PRODUCTION
+    }
+
+    fun Context.openPlayStoreSubscriptions() {
+        val uri = Uri.parse("https://play.google.com/store/account/subscriptions")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+    }
+
+    fun Context.openPlayStoreApp() {
+        try {
+            val uri = Uri.parse("market://details?id=$packageName")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
+        catch (e: Exception) {
+            val uri = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
     }
 }
