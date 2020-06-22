@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.net.Uri
+import androidx.core.content.ContextCompat
+
 
 object AppUtils {
 
@@ -36,5 +38,12 @@ object AppUtils {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
+    }
+
+    fun Context.openShareTextDialog(title: String, message: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, message)
+        startActivity(Intent.createChooser(intent, title))
     }
 }
