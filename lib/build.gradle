@@ -29,11 +29,12 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     //Google
-    compileOnly("com.android.billingclient:billing:$dependency.google_billing")
-    compileOnly("com.android.billingclient:billing-ktx:$dependency.google_billing")
+    implementation "com.android.billingclient:billing:$dependency.google_billing"
+    implementation "com.android.billingclient:billing-ktx:$dependency.google_billing"
 
     //Firebase
-    compileOnly("com.google.firebase:firebase-ads:$dependency.firebase_ads")
+    implementation "com.google.firebase:firebase-ads:$dependency.firebase_ads"
+    implementation "com.google.firebase:firebase-firestore-ktx:$dependency.firebase_firestore"
 
     //Jetbrains
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$dependency.jetbrains_kotlin"
