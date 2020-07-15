@@ -11,7 +11,7 @@ interface IFirestoreDatabase {
 
     fun readCollection(collectionReference: CollectionReference, callback: (List<IDocument>) -> Unit)
 
-    fun readCollection(query: Query, callback: (List<IDocument>) -> Unit)
+    fun readCollection(collectionId: String, query: Query, callback: (List<IDocument>) -> Unit)
 
     fun writeDocument(documentReference: DocumentReference, data: IDocument, callback: ((Boolean) -> Unit)? = null)
 
