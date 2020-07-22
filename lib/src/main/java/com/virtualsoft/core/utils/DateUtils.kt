@@ -22,7 +22,6 @@ object DateUtils {
     fun dateInstance(timeInMillis: Long): Date {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timeInMillis
-        calendar.add(Calendar.DATE, 1)
         return calendar.time
     }
 
