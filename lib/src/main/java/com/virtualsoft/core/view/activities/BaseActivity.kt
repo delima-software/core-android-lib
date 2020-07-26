@@ -23,6 +23,18 @@ abstract class BaseActivity : AppCompatActivity() {
         findNavController(navControllerId)
     }
 
+    protected open fun initialize() {
+
+    }
+
+    protected open fun setupViews() {
+
+    }
+
+    protected open fun resetViews() {
+
+    }
+
     fun setStatusBarColor(@ColorInt color: Int, isDark: Boolean) {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
