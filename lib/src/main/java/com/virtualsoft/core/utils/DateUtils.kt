@@ -105,4 +105,11 @@ object DateUtils {
         val dateFormat = SimpleDateFormat(format, Locale.getDefault())
         return dateFormat.format(date)
     }
+
+    fun getLastDateOfMonth(): Date {
+        val calendar = Calendar.getInstance()
+        val lastDay = calendar.getActualMaximum(Calendar.DATE)
+        calendar.set(Calendar.DATE, lastDay)
+        return calendar.time
+    }
 }
