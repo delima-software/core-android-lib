@@ -33,7 +33,7 @@ dependencies {
     implementation "com.android.billingclient:billing-ktx:$dependency.google_billing"
 
     //Firebase
-    implementation "com.google.firebase:firebase-ads:$dependency.firebase_ads"
+    compileOnly("com.google.firebase:firebase-ads:$dependency.firebase_ads")
     implementation "com.google.firebase:firebase-firestore-ktx:$dependency.firebase_firestore"
 
     //Jetbrains

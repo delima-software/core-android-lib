@@ -6,8 +6,8 @@ buildscript {
         targetSdkVersion = 29
         minSdkVersion = 23
 
-        versionCode = 15
-        versionName = '3.3.3'
+        versionCode = 16
+        versionName = '3.3.4'
 
         classpath = [
                 android_gradle : '4.0.0',
@@ -16,6 +16,7 @@ buildscript {
 
         dependency = [
                 google_billing : '2.2.1',
+                google_material : '1.1.0',
 
                 firebase_ads : '19.1.0',
                 firebase_firestore : '21.4.3',

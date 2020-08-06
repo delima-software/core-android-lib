@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.net.Uri
+import android.os.Build
 import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.*
 
 
 object AppUtils {
@@ -45,5 +47,9 @@ object AppUtils {
         intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_TEXT, message)
         startActivity(Intent.createChooser(intent, title))
+    }
+
+    fun checkVersionCompatibility(version: Int): Boolean {
+        return Build.VERSION.SDK_INT >= version
     }
 }
