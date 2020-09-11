@@ -1,9 +1,13 @@
 package com.virtualsoft.core.utils
 
+import android.content.Context
+import com.virtualsoft.core.R
 import java.text.SimpleDateFormat
 import java.util.*
 
 object DateUtils {
+
+    const val dateFormatString = "MMM d, yyyy"
 
     fun setDateToMidNight(date: Date): Date {
         val calendar = Calendar.getInstance()
@@ -111,5 +115,80 @@ object DateUtils {
         val lastDay = calendar.getActualMaximum(Calendar.DATE)
         calendar.set(Calendar.DATE, lastDay)
         return calendar.time
+    }
+
+    fun today(): Date {
+        return setDateToMidNight(currentDate())
+    }
+
+    fun yesterday(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = today()
+        calendar.add(Calendar.DATE, -1)
+        return setDateToMidNight(calendar.time)
+    }
+
+    fun tomorrow(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = today()
+        calendar.add(Calendar.DATE, 1)
+        return setDateToMidNight(calendar.time)
+    }
+
+    fun Context.readableDateText(date: Date): String {
+        if (isToday(date))
+            return this.resources.getString(R.string.default_date_today)
+        if (isTomorrow(date))
+            return this.resources.getString(R.string.default_date_tomorrow)
+        if (isYesterday(date))
+            return this.resources.getString(R.string.default_date_yesterday)
+        return dateText(date, dateFormatString)
+    }
+
+    fun Context.readableDateText(timeInMillis: Long): String {
+        val date = dateInstance(timeInMillis)
+        return this.readableDateText(date)
+    }
+
+    fun Context.readableDateText(year: Int, month: Int, dayOfMonth: Int): String {
+        val date = dateInstance(year, month, dayOfMonth)
+        return this.readableDateText(date)
+    }
+
+    fun Context.resolveDateString(dateString: String): String? {
+        if (dateString == this.resources.getString(R.string.default_date_none))
+            return null
+        if (dateString == this.resources.getString(R.string.default_date_today))
+            return dateText(today(), dateFormatString)
+        if (dateString == this.resources.getString(R.string.default_date_yesterday))
+            return dateText(yesterday(), dateFormatString)
+        if (dateString == this.resources.getString(R.string.default_date_tomorrow))
+            return dateText(tomorrow(), dateFormatString)
+        return dateString
+    }
+
+    fun getCurrentDayOfWeek(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.DAY_OF_WEEK)
+    }
+
+    fun getDayOfWeek(date: Date): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return calendar.get(Calendar.DAY_OF_WEEK)
+    }
+
+    fun Date.isSameDay(date: Date): Boolean {
+        val calendar1 = Calendar.getInstance()
+        val calendar2 = Calendar.getInstance()
+        calendar1.time = this
+        calendar2.time = date
+        return calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
+                && calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
+    }
+
+    fun Date.getHourMinute(): String {
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return dateFormat.format(this)
     }
 }

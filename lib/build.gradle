@@ -29,6 +29,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     //Google
+    implementation "com.google.android.material:material:$dependency.google_material"
     implementation "com.android.billingclient:billing:$dependency.google_billing"
     implementation "com.android.billingclient:billing-ktx:$dependency.google_billing"
 
@@ -38,12 +39,16 @@ dependencies {
 
     //Jetbrains
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$dependency.jetbrains_kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$dependency.jetbrains_kotlin_coroutines_play_services"
 
     //Androidx
     implementation "androidx.core:core-ktx:$dependency.androidx_core"
     implementation "androidx.appcompat:appcompat:$dependency.androidx_appcompat"
     implementation "androidx.navigation:navigation-fragment-ktx:$dependency.androidx_navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$dependency.androidx_navigation"
+
+    //Libs
+    implementation "com.github.drfonfon:android-kotlin-geohash:$dependency.libs_drfonfon_geohash"
 
     //Test
     testImplementation "junit:junit:$dependency.tests_junit"
