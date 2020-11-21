@@ -7,7 +7,7 @@ interface INotification : IBuild {
 
     val context: Context
     val notificationId: Int
-    val notificationChannel: NotificationChannel
+    val notificationChannel: NotificationChannel?
 
     fun show()
 

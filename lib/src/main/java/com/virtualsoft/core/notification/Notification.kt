@@ -8,21 +8,22 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.virtualsoft.core.designpatterns.builder.IBuilder
 import com.virtualsoft.core.utils.AppUtils.checkVersionCompatibility
+import com.virtualsoft.core.utils.GeneratorUtils.generateUUID
 import kotlin.random.Random
 
 class Notification(override val context: Context,
-                   override val notificationChannel: NotificationChannel,
-                   override val notificationId: Int) : INotification {
+                   override val notificationId: Int,
+                   override val notificationChannel: NotificationChannel? = null) : INotification {
 
-    private var notificationBuilder = NotificationCompat.Builder(context, notificationChannel.channelId)
+    private var notificationBuilder = NotificationCompat.Builder(context, notificationChannel?.channelId?: generateUUID())
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setAutoCancel(true)
 
     class Builder(private val context: Context,
-                  notificationChannel: NotificationChannel,
-                  notificationId: Int = Random.nextInt()) : IBuilder<INotification> {
+                  notificationId: Int = Random.nextInt(),
+                  notificationChannel: NotificationChannel? = null) : IBuilder<INotification> {
 
-        override val building = Notification(context, notificationChannel, notificationId)
+        override val building = Notification(context, notificationId, notificationChannel)
 
         init {
             createNotificationChannel()
@@ -75,15 +76,17 @@ class Notification(override val context: Context,
 
         private fun createNotificationChannel() {
             if (checkVersionCompatibility(Build.VERSION_CODES.O)) {
-                val channelId = building.notificationChannel.channelId
-                val name = building.notificationChannel.name
-                val description = building.notificationChannel.description
-                val importance = building.notificationChannel.importance
-                val channel = android.app.NotificationChannel(channelId, name, importance).apply {
-                    this.description = description
+                building.notificationChannel?.let {
+                    val channelId = it.channelId
+                    val name = it.name
+                    val description = it.description
+                    val importance = it.importance
+                    val channel = android.app.NotificationChannel(channelId, name, importance).apply {
+                        this.description = description
+                    }
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.createNotificationChannel(channel)
                 }
-                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
             }
         }
     }
