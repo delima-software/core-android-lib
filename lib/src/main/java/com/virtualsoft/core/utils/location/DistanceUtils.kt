@@ -1,5 +1,6 @@
 package com.virtualsoft.core.utils.location
 
+import android.location.Location
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.acos
@@ -10,6 +11,18 @@ object DistanceUtils {
 
     fun kmToMiles(km: Double): Double {
         return km * 0.621371
+    }
+
+    fun distanceInMeters(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Float {
+        val location1 = Location("").apply {
+            latitude = lat1
+            longitude = lon1
+        }
+        val location2 = Location("").apply {
+            latitude = lat2
+            longitude = lon2
+        }
+        return location1.distanceTo(location2)
     }
 
     fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
