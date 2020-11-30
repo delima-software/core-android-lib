@@ -4,7 +4,7 @@
 
 ## Jitpack repository
 
-Add the jitpack maven repository on root build.gradle testando:
+Add the jitpack maven repository on root build.gradle:
 
 ```groovy
 allprojects {
