@@ -19,5 +19,5 @@ allprojects {
 Add the following line to app level build.gradle:
 
 ```groovy
-implementation "org.bitbucket.virtualsoft-libs:core-android-lib:$latest_lib_version"
+implementation "com.github.VirtualsoftCorporation:core-android-lib:$latest_lib_version"
 ```
