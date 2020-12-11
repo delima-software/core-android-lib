@@ -19,6 +19,16 @@ object DateUtils {
         return calendar.time
     }
 
+    fun setDateTime(date: Date, hour: Int? = null, minute: Int? = null, second: Int? = null, millisecond: Int? = null): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.set(Calendar.HOUR_OF_DAY, hour?: 0)
+        calendar.set(Calendar.MINUTE, minute?: 0)
+        calendar.set(Calendar.SECOND, second?: 0)
+        calendar.set(Calendar.MILLISECOND, millisecond?: 0)
+        return calendar.time
+    }
+
     fun currentDate(): Date {
         return Calendar.getInstance().time
     }
