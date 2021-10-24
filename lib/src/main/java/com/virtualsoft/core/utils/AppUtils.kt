@@ -5,8 +5,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.os.Build
-import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.*
+import androidx.annotation.ChecksSdkIntAtLeast
 
 
 object AppUtils {
@@ -49,6 +48,7 @@ object AppUtils {
         startActivity(Intent.createChooser(intent, title))
     }
 
+    @ChecksSdkIntAtLeast(parameter = 0)
     fun checkVersionCompatibility(version: Int): Boolean {
         return Build.VERSION.SDK_INT >= version
     }
