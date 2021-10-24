@@ -1,26 +1,25 @@
 package com.virtualsoft.core.ads.admob
 
+import android.app.Activity
 import android.content.Context
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.virtualsoft.core.designpatterns.builder.IBuilder
 import com.virtualsoft.core.utils.AppUtils.isDebugging
 
 class AdMob(val context: Context) : IAdMob {
 
     //DEBUG
-    var debugBannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
-        private set
-    var debugInterstitialAdUnitId: String = "ca-app-pub-3940256099942544/1033173712"
-        private set
+    private var debugBannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
+    private var debugInterstitialAdUnitId: String = "ca-app-pub-3940256099942544/1033173712"
 
     //RELEASE
-    var bannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
-        private set
-    var interstitialAdUnitId: String = "ca-app-pub-3940256099942544/1033173712"
-        private set
+    private var bannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
+    private var interstitialAdUnitId: String = "ca-app-pub-3940256099942544/1033173712"
 
-    override val bannerAd: AdView = AdView(context)
-    override val interstitialAd: InterstitialAd = InterstitialAd(context)
+    private val bannerAd: AdView = AdView(context)
+    private var interstitialAd: InterstitialAd? = null
 
     class Builder(val context: Context) : IBuilder<AdMob> {
 
@@ -38,101 +37,76 @@ class AdMob(val context: Context) : IAdMob {
 
         override fun build(): AdMob {
             MobileAds.initialize(context) {}
-            initBanner()
-            initInterstitial()
             return building
-        }
-
-        private fun initBanner() {
-            var adUnitId = building.debugBannerAdUnitId
-            if (!context.isDebugging())
-                adUnitId = building.bannerAdUnitId
-            building.bannerAd.adUnitId = adUnitId
-            building.bannerAd.adSize = AdSize.BANNER
-            building.bannerAd.adListener = object : AdListener() {
-                override fun onAdClosed() {
-                    building.bannerAd.loadAd(AdRequest.Builder().build())
-                }
-            }
-            building.bannerAd.loadAd(AdRequest.Builder().build())
-        }
-
-        private fun initInterstitial() {
-            var adUnitId = building.debugInterstitialAdUnitId
-            if (!context.isDebugging())
-                adUnitId = building.interstitialAdUnitId
-            building.interstitialAd.adUnitId = adUnitId
-            building.interstitialAd.adListener = object : AdListener() {
-                override fun onAdClosed() {
-                    building.interstitialAd.loadAd(AdRequest.Builder().build())
-                }
-            }
-            building.interstitialAd.loadAd(AdRequest.Builder().build())
         }
     }
 
-    override fun setBannerAdListener(adListener: AdListener) {
+    override fun getBannerAdView(): AdView {
+        return bannerAd
+    }
+
+    override fun loadBannerAd(callback: ((Boolean) -> Unit)?) {
+        var adUnitId = debugBannerAdUnitId
+        if (!context.isDebugging())
+            adUnitId = bannerAdUnitId
+        bannerAd.adUnitId = adUnitId
+        bannerAd.adSize = AdSize.BANNER
         bannerAd.adListener = object : AdListener() {
             override fun onAdClosed() {
                 bannerAd.loadAd(AdRequest.Builder().build())
-                adListener.onAdClosed()
-            }
-
-            override fun onAdFailedToLoad(var1: Int) {
-                adListener.onAdFailedToLoad(var1)
-            }
-
-            override fun onAdLeftApplication() {
-                adListener.onAdLeftApplication()
-            }
-
-            override fun onAdOpened() {
-                adListener.onAdOpened()
             }
 
             override fun onAdLoaded() {
-                adListener.onAdLoaded()
+                callback?.invoke(true)
             }
 
-            override fun onAdClicked() {
-                adListener.onAdClicked()
-            }
-
-            override fun onAdImpression() {
-                adListener.onAdImpression()
+            override fun onAdFailedToLoad(p0: LoadAdError) {
+                callback?.invoke(false)
             }
         }
+        bannerAd.loadAd(AdRequest.Builder().build())
     }
 
-    override fun setInterstitialAdListener(adListener: AdListener) {
-        interstitialAd.adListener = object : AdListener() {
-            override fun onAdClosed() {
-                interstitialAd.loadAd(AdRequest.Builder().build())
-                adListener.onAdClosed()
+    private fun loadInterstitialAd(callback: ((Boolean) -> Unit)? = null) {
+        var adUnitId = debugInterstitialAdUnitId
+        if (!context.isDebugging())
+            adUnitId = interstitialAdUnitId
+        val fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                interstitialAd = null
             }
+        }
+        InterstitialAd.load(context,
+            adUnitId,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    interstitialAd = p0
+                    interstitialAd?.fullScreenContentCallback = fullScreenContentCallback
+                    callback?.invoke(true)
+                }
 
-            override fun onAdFailedToLoad(var1: Int) {
-                adListener.onAdFailedToLoad(var1)
-            }
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    callback?.invoke(false)
+                }
+            })
+    }
 
-            override fun onAdLeftApplication() {
-                adListener.onAdLeftApplication()
-            }
-
-            override fun onAdOpened() {
-                adListener.onAdOpened()
-            }
-
-            override fun onAdLoaded() {
-                adListener.onAdLoaded()
-            }
-
-            override fun onAdClicked() {
-                adListener.onAdClicked()
-            }
-
-            override fun onAdImpression() {
-                adListener.onAdImpression()
+    override fun showInterstitialAd(activity: Activity, callback: ((Boolean) -> Unit)?) {
+        if (interstitialAd != null) {
+            interstitialAd?.show(activity)
+            loadInterstitialAd { }
+            callback?.invoke(true)
+        } else {
+            loadInterstitialAd { hasLoaded ->
+                if (hasLoaded) {
+                    interstitialAd?.show(activity)
+                    loadInterstitialAd { }
+                    callback?.invoke(true)
+                }
+                else {
+                    callback?.invoke(false)
+                }
             }
         }
     }
