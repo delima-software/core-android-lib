@@ -1,5 +1,6 @@
 package com.virtualsoft.core.view.fragments
 
+import android.app.Activity
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.google.android.gms.ads.AdListener
@@ -19,7 +20,7 @@ interface IAdFragment {
     fun showAds(callback: () -> Unit) { }
 
     fun getBannerAdView(): AdView? {
-        return AdProviders.adMob?.bannerAd
+        return AdProviders.adMob?.getBannerAdView()
     }
 
     fun setupBanner(relativeLayout: RelativeLayout?) {
@@ -35,39 +36,19 @@ interface IAdFragment {
         }
     }
 
-    fun showBanner(callback: (() -> Unit)? = null): Boolean {
+    fun tryLoadBanner(callback: ((Boolean) -> Unit)? = null) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowBanner) {
-            AdProviders.adMob?.let { adMob ->
-                adMob.setBannerAdListener(object: AdListener() {
-                    override fun onAdClosed() {
-                        callback?.invoke()
-                    }
-                })
-                if (!adMob.bannerAd.isLoading) {
-                    adMob.bannerAd.loadAd(AdRequest.Builder().build())
-                    return true
-                }
-            }
+            AdProviders.adMob?.loadBannerAd(callback)
         }
-        return false
+        callback?.invoke(false)
     }
 
-    fun showInterstitial(callback: (() -> Unit)? = null): Boolean {
+    fun tryShowInterstitial(activity: Activity, callback: ((Boolean) -> Unit)? = null) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowInterstitial) {
-            AdProviders.adMob?.let { adMob ->
-                adMob.setInterstitialAdListener(object : AdListener() {
-                    override fun onAdClosed() {
-                        callback?.invoke()
-                    }
-                })
-                if(adMob.interstitialAd.isLoaded) {
-                    adMob.interstitialAd.show()
-                    return true
-                }
-            }
+            AdProviders.adMob?.showInterstitialAd(activity, callback)
         }
-        return false
+        callback?.invoke(false)
     }
 }

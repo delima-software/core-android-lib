@@ -49,8 +49,8 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
 
     override fun startConnection(callback: (Boolean) -> Unit) {
         billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(p0: BillingResult?) {
-                if (p0?.responseCode == BillingClient.BillingResponseCode.OK)
+            override fun onBillingSetupFinished(p0: BillingResult) {
+                if (p0.responseCode == BillingClient.BillingResponseCode.OK)
                     callback(true)
                 else
                     callback(false)
@@ -108,14 +108,14 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
         }
     }
 
-    override fun onPurchasesUpdated(p0: BillingResult?, p1: MutableList<Purchase>?) {
-        if (p0?.responseCode == BillingClient.BillingResponseCode.OK && p1 != null) {
+    override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
+        if (p0.responseCode == BillingClient.BillingResponseCode.OK && p1 != null) {
             GlobalScope.launch {
                 for (purchase in p1)
                     handlePurchase(purchase)
             }
         }
-        else if (p0?.responseCode == BillingClient.BillingResponseCode.USER_CANCELED)
+        else if (p0.responseCode == BillingClient.BillingResponseCode.USER_CANCELED)
             userCancelledPurchaseListener?.invoke()
         else
             billingErrorListener?.invoke()
