@@ -6,8 +6,8 @@ buildscript {
         targetSdkVersion = 30
         minSdkVersion = 21
 
-        versionCode = 37
-        versionName = '4.0.3'
+        versionCode = 38
+        versionName = '4.0.4'
 
         classpath = [
                 android_gradle : '7.0.3',
@@ -48,8 +48,25 @@ buildscript {
     }
 }
 
-plugins {
-    id 'maven-publish'
+subprojects {
+    apply plugin: 'maven-publish'
+
+    afterEvaluate {
+        if (!plugins.hasPlugin("com.android.application")) {
+            publishing {
+                publications {
+                    release(MavenPublication) {
+                        afterEvaluate {
+                            from components.release
+                            groupId = 'com.github.VirtualsoftCorporation'
+                            artifactId = 'core-android-lib'
+                            version = rootProject.ext.versionName
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects {
