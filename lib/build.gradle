@@ -55,16 +55,3 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$dependency.tests_androidx_junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$dependency.tests_androidx_espresso"
 }
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.github.VirtualsoftCorporation'
-                artifactId = 'core-android-lib'
-                version = "$rootProject.ext.versionCode"
-            }
-        }
-    }
-}
