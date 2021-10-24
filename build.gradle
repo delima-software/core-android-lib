@@ -6,8 +6,8 @@ buildscript {
         targetSdkVersion = 30
         minSdkVersion = 21
 
-        versionCode = 39
-        versionName = '4.0.5'
+        versionCode = 40
+        versionName = '4.0.6'
 
         classpath = [
                 android_gradle : '7.0.3',
@@ -45,27 +45,6 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$classpath.android_gradle"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$classpath.jetbrains_kotlin"
-    }
-}
-
-subprojects {
-    apply plugin: 'maven-publish'
-
-    afterEvaluate {
-        if (!plugins.hasPlugin("com.android.application")) {
-            publishing {
-                publications {
-                    release(MavenPublication) {
-                        afterEvaluate {
-                            from components.release
-                            groupId = 'com.github.VirtualsoftCorporation'
-                            artifactId = 'core-android-lib'
-                            version = rootProject.ext.versionName
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
