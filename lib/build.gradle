@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -20,6 +20,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -52,5 +56,20 @@ dependencies {
     testImplementation "junit:junit:$dependency.tests_junit"
     androidTestImplementation "androidx.test.ext:junit:$dependency.tests_androidx_junit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$dependency.tests_androidx_espresso"
+}
 
+task androidSourcesJar(type: Jar) {
+    classifier 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact androidSourcesJar // optional sources
+            }
+        }
+    }
 }
