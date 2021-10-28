@@ -1,29 +1,27 @@
-package com.virtualsoft.core.view.fragments
+package com.virtualsoft.core.view.fragments.earning
 
 import android.app.Activity
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.virtualsoft.core.ads.AdProviders
-import com.virtualsoft.core.view.activities.BaseActivity
+import com.virtualsoft.core.view.fragments.BaseFragment
 import kotlin.random.Random
 
-interface IAdFragment {
+abstract class EarningFragment : BaseFragment(), IAdFragment, IBillingFragment {
 
-    var chanceShowBanner: Int
-    var chanceShowInterstitial: Int
+    override var chanceShowBanner: Int = 100
+    override var chanceShowInterstitial: Int = 10
 
-    fun setupAds() { }
+    override fun setupAds() { }
 
-    fun showAds(callback: () -> Unit) { }
+    override fun showAds(callback: () -> Unit) { }
 
-    fun getBannerAdView(): AdView? {
+    override fun getBannerAdView(): AdView? {
         return AdProviders.adMob?.getBannerAdView()
     }
 
-    fun setupBanner(relativeLayout: RelativeLayout?) {
+    override fun setupBanner(relativeLayout: RelativeLayout?) {
         getBannerAdView()?.let { adView ->
             if (adView.parent != null)
                 (adView.parent as? ViewGroup)?.removeView(adView)
@@ -36,7 +34,7 @@ interface IAdFragment {
         }
     }
 
-    fun tryLoadBanner(callback: ((Boolean) -> Unit)? = null) {
+    override fun tryLoadBanner(callback: ((Boolean) -> Unit)?) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowBanner) {
             AdProviders.adMob?.loadBannerAd(callback)
@@ -44,11 +42,15 @@ interface IAdFragment {
         callback?.invoke(false)
     }
 
-    fun tryShowInterstitial(activity: Activity, callback: ((Boolean) -> Unit)? = null) {
+    override fun tryShowInterstitial(activity: Activity, callback: ((Boolean) -> Unit)?) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowInterstitial) {
             AdProviders.adMob?.showInterstitialAd(activity, callback)
         }
         callback?.invoke(false)
+    }
+
+    override suspend fun checkPremium(): Boolean {
+        return false
     }
 }

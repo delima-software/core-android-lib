@@ -9,17 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.virtualsoft.core.view.activities.BaseActivity
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), IFragment {
 
-    protected open fun initialize() {
-
-    }
-
-    protected open fun setupViews() {
-
-    }
-
-    protected open fun resetViews() {
-
-    }
 }
