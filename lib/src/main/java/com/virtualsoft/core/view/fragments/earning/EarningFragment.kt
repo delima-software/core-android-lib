@@ -53,4 +53,8 @@ abstract class EarningFragment : BaseFragment(), IAdFragment, IBillingFragment {
     override suspend fun checkPremium(): Boolean {
         return false
     }
+
+    override suspend fun changePremium(isPremium: Boolean): Boolean {
+        return false
+    }
 }
