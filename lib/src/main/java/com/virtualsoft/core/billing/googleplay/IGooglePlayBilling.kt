@@ -14,7 +14,7 @@ interface IGooglePlayBilling : IBillingProvider {
 
     fun endConnection()
 
-    fun queryPurchases(skuType: String): Purchase.PurchasesResult
+    fun queryPurchasesAsync(skuType: String, listener: PurchasesResponseListener)
 
     fun queryPurchaseHistoryAsync(skuType: String, listener: PurchaseHistoryResponseListener)
 
