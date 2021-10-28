@@ -66,8 +66,11 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
         billingClient.endConnection()
     }
 
-    override fun queryPurchases(skuType: String): Purchase.PurchasesResult {
-        return billingClient.queryPurchases(skuType)
+    override fun queryPurchasesAsync(
+        skuType: String,
+        listener: PurchasesResponseListener
+    ) {
+        billingClient.queryPurchasesAsync(skuType, listener)
     }
 
     override fun queryPurchaseHistoryAsync(
