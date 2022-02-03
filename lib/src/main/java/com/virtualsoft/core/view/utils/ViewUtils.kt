@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.virtualsoft.core.view.utils.ViewUtils.gone
 
 object ViewUtils {
 
@@ -14,6 +15,10 @@ object ViewUtils {
 
     fun View.gone() {
         this.visibility = View.GONE
+    }
+
+    fun View.invisible() {
+        this.visibility = View.INVISIBLE
     }
 
     fun ProgressBar.setWaiting(waiting: Boolean) {
