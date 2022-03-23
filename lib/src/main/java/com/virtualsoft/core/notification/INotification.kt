@@ -5,13 +5,12 @@ import com.virtualsoft.core.designpatterns.builder.IBuild
 
 interface INotification : IBuild {
 
-    val context: Context
     val notificationId: Int
     val notificationChannel: NotificationChannel?
 
-    fun show()
+    fun show(context: Context)
 
-    fun remove()
+    fun remove(context: Context)
 
-    fun removeAll()
+    fun removeAll(context: Context)
 }
