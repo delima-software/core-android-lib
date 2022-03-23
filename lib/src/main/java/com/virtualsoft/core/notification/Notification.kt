@@ -11,70 +11,70 @@ import com.virtualsoft.core.utils.AppUtils.checkVersionCompatibility
 import com.virtualsoft.core.utils.GeneratorUtils.generateUUID
 import kotlin.random.Random
 
-class Notification(override val context: Context,
-                   override val notificationId: Int,
+class Notification(override val notificationId: Int,
                    override val notificationChannel: NotificationChannel? = null) : INotification {
 
-    private var notificationBuilder = NotificationCompat.Builder(context, notificationChannel?.channelId?: generateUUID())
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .setAutoCancel(true)
+    private var notificationBuilder: NotificationCompat.Builder? = null
 
-    class Builder(private val context: Context,
-                  notificationId: Int = Random.nextInt(),
+    class Builder(notificationId: Int = Random.nextInt(),
                   notificationChannel: NotificationChannel? = null) : IBuilder<INotification> {
 
-        override val building = Notification(context, notificationId, notificationChannel)
-
-        init {
-            createNotificationChannel()
-        }
+        override val building = Notification(notificationId, notificationChannel)
 
         fun setSmallIcon(res: Int): Builder {
-            building.notificationBuilder.setSmallIcon(res)
+            building.notificationBuilder?.setSmallIcon(res)
             return this
         }
 
         fun setContentTitle(title: String): Builder {
-            building.notificationBuilder.setContentTitle(title)
+            building.notificationBuilder?.setContentTitle(title)
             return this
         }
 
         fun setContentText(text: String): Builder {
-            building.notificationBuilder.setContentText(text)
+            building.notificationBuilder?.setContentText(text)
             return this
         }
 
         fun setPriority(priority: Int): Builder {
-            building.notificationBuilder.priority = priority
+            building.notificationBuilder?.priority = priority
             return this
         }
 
         fun setCategory(category: String): Builder {
-            building.notificationBuilder.setCategory(category)
+            building.notificationBuilder?.setCategory(category)
             return this
         }
 
         fun setStyle(style: NotificationCompat.Style): Builder {
-            building.notificationBuilder.setStyle(style)
+            building.notificationBuilder?.setStyle(style)
             return this
         }
 
         fun setAutoCancel(autoCancel: Boolean): Builder {
-            building.notificationBuilder.setAutoCancel(autoCancel)
+            building.notificationBuilder?.setAutoCancel(autoCancel)
             return this
         }
 
         fun setTimeoutAfter(duration: Long): Builder {
-            building.notificationBuilder.setTimeoutAfter(duration)
+            building.notificationBuilder?.setTimeoutAfter(duration)
             return this
         }
 
         fun setContentIntent(pendingIntent: PendingIntent): Builder {
-            building.notificationBuilder.setContentIntent(pendingIntent)
+            building.notificationBuilder?.setContentIntent(pendingIntent)
             return this
         }
 
-        private fun createNotificationChannel() {
+        fun initialize(context: Context): Builder {
+            createNotificationChannel(context)
+            building.notificationBuilder = NotificationCompat.Builder(context, building.notificationChannel?.channelId?: generateUUID())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+            return this
+        }
+
+        private fun createNotificationChannel(context: Context) {
             if (checkVersionCompatibility(Build.VERSION_CODES.O)) {
                 building.notificationChannel?.let {
                     val channelId = it.channelId
@@ -91,19 +91,21 @@ class Notification(override val context: Context,
         }
     }
 
-    override fun show() {
+    override fun show(context: Context) {
         with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, notificationBuilder.build())
+            notificationBuilder?.build()?.let {
+                notify(notificationId, it)
+            }
         }
     }
 
-    override fun remove() {
+    override fun remove(context: Context) {
         with(NotificationManagerCompat.from(context)) {
             cancel(notificationId)
         }
     }
 
-    override fun removeAll() {
+    override fun removeAll(context: Context) {
         with(NotificationManagerCompat.from(context)) {
             cancelAll()
         }

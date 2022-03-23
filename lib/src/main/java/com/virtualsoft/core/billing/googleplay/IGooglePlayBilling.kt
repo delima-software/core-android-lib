@@ -6,7 +6,7 @@ import com.virtualsoft.core.billing.IBillingProvider
 
 interface IGooglePlayBilling : IBillingProvider {
 
-    val billingClient: BillingClient
+    var billingClient: BillingClient?
 
     fun isReady(): Boolean
 

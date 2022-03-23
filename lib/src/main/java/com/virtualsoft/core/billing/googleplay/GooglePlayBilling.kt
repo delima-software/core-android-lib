@@ -6,21 +6,18 @@ import com.android.billingclient.api.*
 import com.virtualsoft.core.designpatterns.builder.IBuilder
 import kotlinx.coroutines.*
 
-class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpdatedListener {
+class GooglePlayBilling : IGooglePlayBilling, PurchasesUpdatedListener {
 
-    override val billingClient = BillingClient.newBuilder(context)
-        .setListener(this)
-        .enablePendingPurchases()
-        .build()
+    override var billingClient: BillingClient? = null
 
     private var billingServiceDisconnectedListener: (() -> Unit)? = null
     private var userCancelledPurchaseListener: (() -> Unit)? = null
     private var billingErrorListener: (() -> Unit)? = null
     private var acknowledgePurchaseListener: ((Purchase) -> Unit)? = null
 
-    class Builder(val context: Context) : IBuilder<GooglePlayBilling> {
+    class Builder : IBuilder<GooglePlayBilling> {
 
-        override val building = GooglePlayBilling(context)
+        override val building = GooglePlayBilling()
 
         fun setBillingServiceDisconnectedListener(billingServiceDisconnectedListener: () -> Unit): Builder {
             building.billingServiceDisconnectedListener = billingServiceDisconnectedListener
@@ -41,14 +38,22 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
             building.acknowledgePurchaseListener = acknowledgePurchaseListener
             return this
         }
+
+        fun initialize(context: Context): Builder {
+            building.billingClient = BillingClient.newBuilder(context)
+                .setListener(building)
+                .enablePendingPurchases()
+                .build()
+            return this
+        }
     }
 
     override fun isReady(): Boolean {
-        return billingClient.isReady
+        return billingClient?.isReady == true
     }
 
     override fun startConnection(callback: (Boolean) -> Unit) {
-        billingClient.startConnection(object : BillingClientStateListener {
+        billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(p0: BillingResult) {
                 if (p0.responseCode == BillingClient.BillingResponseCode.OK)
                     callback(true)
@@ -63,51 +68,51 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
     }
 
     override fun endConnection() {
-        billingClient.endConnection()
+        billingClient?.endConnection()
     }
 
     override fun queryPurchasesAsync(
         skuType: String,
         listener: PurchasesResponseListener
     ) {
-        billingClient.queryPurchasesAsync(skuType, listener)
+        billingClient?.queryPurchasesAsync(skuType, listener)
     }
 
     override fun queryPurchaseHistoryAsync(
         skuType: String,
         listener: PurchaseHistoryResponseListener
     ) {
-        billingClient.queryPurchaseHistoryAsync(skuType, listener)
+        billingClient?.queryPurchaseHistoryAsync(skuType, listener)
     }
 
     override suspend fun queryInAppSkuDetails(skuList: List<String>): SkuDetailsResult? {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
             return withContext(Dispatchers.IO) {
-                billingClient.querySkuDetails(params.build())
+                billingClient?.querySkuDetails(params.build())
             }
         }
         return null
     }
 
     override suspend fun querySubsSkuDetails(skuList: List<String>): SkuDetailsResult? {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
             return withContext(Dispatchers.IO) {
-                billingClient.querySkuDetails(params.build())
+                billingClient?.querySkuDetails(params.build())
             }
         }
         return null
     }
 
     override fun launchBillingFlow(activity: Activity, skuDetails: SkuDetails) {
-        if (billingClient.isReady) {
+        if (billingClient?.isReady == true) {
             val flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
                 .build()
-            billingClient.launchBillingFlow(activity, flowParams)
+            billingClient?.launchBillingFlow(activity, flowParams)
         }
     }
 
@@ -132,7 +137,7 @@ class GooglePlayBilling(val context: Context) : IGooglePlayBilling, PurchasesUpd
                     .setPurchaseToken(purchase.purchaseToken)
                     .build()
                 withContext(Dispatchers.IO) {
-                    billingClient.acknowledgePurchase(acknowledgePurchaseParams)
+                    billingClient?.acknowledgePurchase(acknowledgePurchaseParams)
                 }
             }
         }

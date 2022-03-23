@@ -8,7 +8,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.virtualsoft.core.designpatterns.builder.IBuilder
 import com.virtualsoft.core.utils.AppUtils.isDebugging
 
-class AdMob(val context: Context) : IAdMob {
+class AdMob : IAdMob {
 
     //DEBUG
     private var debugBannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
@@ -18,12 +18,12 @@ class AdMob(val context: Context) : IAdMob {
     private var bannerAdUnitId: String = "ca-app-pub-3940256099942544/6300978111"
     private var interstitialAdUnitId: String = "ca-app-pub-3940256099942544/1033173712"
 
-    private val bannerAd: AdView = AdView(context)
+    private var bannerAd: AdView? = null
     private var interstitialAd: InterstitialAd? = null
 
-    class Builder(val context: Context) : IBuilder<AdMob> {
+    class Builder : IBuilder<AdMob> {
 
-        override val building = AdMob(context)
+        override val building = AdMob()
 
         fun setBannerAdUnitId(bannerAdUnitId: String): Builder {
             building.bannerAdUnitId = bannerAdUnitId
@@ -35,25 +35,30 @@ class AdMob(val context: Context) : IAdMob {
             return this
         }
 
-        override fun build(): AdMob {
+        fun initialize(context: Context): Builder {
+            building.bannerAd = AdView(context)
             MobileAds.initialize(context) {}
+            return this
+        }
+
+        override fun build(): AdMob {
             return building
         }
     }
 
-    override fun getBannerAdView(): AdView {
+    override fun getBannerAdView(): AdView? {
         return bannerAd
     }
 
-    override fun loadBannerAd(callback: ((Boolean) -> Unit)?) {
+    override fun loadBannerAd(context: Context, callback: ((Boolean) -> Unit)?) {
         var adUnitId = debugBannerAdUnitId
         if (!context.isDebugging())
             adUnitId = bannerAdUnitId
-        bannerAd.adUnitId = adUnitId
-        bannerAd.adSize = AdSize.BANNER
-        bannerAd.adListener = object : AdListener() {
+        bannerAd?.adUnitId = adUnitId
+        bannerAd?.adSize = AdSize.BANNER
+        bannerAd?.adListener = object : AdListener() {
             override fun onAdClosed() {
-                bannerAd.loadAd(AdRequest.Builder().build())
+                bannerAd?.loadAd(AdRequest.Builder().build())
             }
 
             override fun onAdLoaded() {
@@ -64,10 +69,10 @@ class AdMob(val context: Context) : IAdMob {
                 callback?.invoke(false)
             }
         }
-        bannerAd.loadAd(AdRequest.Builder().build())
+        bannerAd?.loadAd(AdRequest.Builder().build())
     }
 
-    private fun loadInterstitialAd(callback: ((Boolean) -> Unit)? = null) {
+    private fun loadInterstitialAd(context: Context, callback: ((Boolean) -> Unit)? = null) {
         var adUnitId = debugInterstitialAdUnitId
         if (!context.isDebugging())
             adUnitId = interstitialAdUnitId
@@ -92,16 +97,16 @@ class AdMob(val context: Context) : IAdMob {
             })
     }
 
-    override fun showInterstitialAd(activity: Activity, callback: ((Boolean) -> Unit)?) {
+    override fun showInterstitialAd(context: Context, activity: Activity, callback: ((Boolean) -> Unit)?) {
         if (interstitialAd != null) {
             interstitialAd?.show(activity)
-            loadInterstitialAd { }
+            loadInterstitialAd(context) { }
             callback?.invoke(true)
         } else {
-            loadInterstitialAd { hasLoaded ->
+            loadInterstitialAd(context) { hasLoaded ->
                 if (hasLoaded) {
                     interstitialAd?.show(activity)
-                    loadInterstitialAd { }
+                    loadInterstitialAd(context) { }
                     callback?.invoke(true)
                 }
                 else {

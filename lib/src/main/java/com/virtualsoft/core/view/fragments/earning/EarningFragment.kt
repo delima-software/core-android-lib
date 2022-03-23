@@ -37,7 +37,7 @@ abstract class EarningFragment : BaseFragment(), IAdFragment, IBillingFragment {
     override fun tryLoadBanner(callback: ((Boolean) -> Unit)?) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowBanner) {
-            AdProviders.adMob?.loadBannerAd(callback)
+            AdProviders.adMob?.loadBannerAd(requireContext(), callback)
         }
         callback?.invoke(false)
     }
@@ -45,7 +45,7 @@ abstract class EarningFragment : BaseFragment(), IAdFragment, IBillingFragment {
     override fun tryShowInterstitial(activity: Activity, callback: ((Boolean) -> Unit)?) {
         val chance = Random.nextInt(0, 100)
         if (chance <= chanceShowInterstitial) {
-            AdProviders.adMob?.showInterstitialAd(activity, callback)
+            AdProviders.adMob?.showInterstitialAd(requireContext(), activity, callback)
         }
         callback?.invoke(false)
     }
