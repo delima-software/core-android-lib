@@ -11,24 +11,20 @@ import com.virtualsoft.core.utils.AppUtils.checkVersionCompatibility
 
 object NetworkUtils {
 
-    private var context: Context? = null
-
-    var isConnected: Boolean = false
-        private set
-        get() = checkNetworkConnection()
+    //private var context: Context? = null
 
     private var isConnectedCompat = false
 
     fun initialize(context: Context) {
-        this.context = context
+        //this.context = context
         if (checkVersionCompatibility(Build.VERSION_CODES.N))
-            setNetworkCallback()
+            setNetworkCallback(context)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun setNetworkCallback() {
+    private fun setNetworkCallback(context: Context) {
         try {
-            val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
             val builder = NetworkRequest.Builder()
 
             connectivityManager?.registerNetworkCallback(builder.build(), object : ConnectivityManager.NetworkCallback() {
@@ -46,9 +42,9 @@ object NetworkUtils {
         }
     }
 
-    private fun checkNetworkConnection(): Boolean {
+    fun checkNetworkConnection(context: Context): Boolean {
         if (!checkVersionCompatibility(Build.VERSION_CODES.N)) {
-            val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
             val activeNetwork = connectivityManager?.activeNetworkInfo
             return activeNetwork?.isConnectedOrConnecting == true
         }
